@@ -35,7 +35,7 @@ export const users = createTable(
     second_home_school: varchar("second_home_school", { length: 256 }).default(
       "",
     ),
-    has_minor: varchar("has_minor", { length: 256 }).notNull(),
+    has_minor: boolean("has_minor").notNull(),
     pronouns: varchar("pronouns", { length: 256 }).default("").notNull(),
     hashedPassword: varchar("hashed_password", { length: 256 }).notNull(),
     graduation_year: varchar("graduation_year", { length: 256 }).notNull(),
