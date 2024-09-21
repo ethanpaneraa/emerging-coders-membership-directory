@@ -1,0 +1,1 @@
+ALTER TABLE "emerging-coders-membership-directory_users" ALTER COLUMN "first_name" SET DEFAULT '';

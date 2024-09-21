@@ -1,0 +1,2 @@
+ALTER TABLE "emerging-coders-membership-directory_users" ALTER COLUMN "first_name" DROP DEFAULT;--> statement-breakpoint
+ALTER TABLE "emerging-coders-membership-directory_users" ALTER COLUMN "pronouns" SET DEFAULT '';
