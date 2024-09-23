@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+export type StudentStatusRadioValue = "current" | "alumni";
+
 export const signupSchema = z
   .object({
     email: z.string().email("Please enter a valid email address"),
@@ -13,40 +15,49 @@ export const signupSchema = z
     first_name: z.string(),
     last_name: z.string(),
     pronouns: z.string(),
-    gender: z.string(),
-    is_dual_degree_student: z.boolean().optional().default(false),
-    second_home_school: z.string().optional(),
-    has_minor: z.boolean().optional().default(false),
+    gender: z.string().optional().default(""),
+    is_dual_degree_student: z.enum(["true", "false"]).default("false"),
+    second_home_school: z.string().optional().default(""),
+    has_minor: z.enum(["true", "false"]).default("false"),
     graduation_year: z.string(),
-    is_alumni: z.boolean(),
-    is_current_student: z.boolean(),
-    prefered_name: z.string(),
-    second_major: z.string().optional(),
-    has_second_major: z.boolean().optional().default(false),
-    minor: z.string().optional(),
+    is_alumni: z.string().optional().default("false"),
+    is_current_student: z.string().optional().default("false"),
+    prefered_name: z.string().optional().default(""),
+    second_major: z.string().optional().default(""),
+    has_second_major: z.enum(["true", "false"]).default("false"),
+    minor: z.string().optional().default(""),
   })
   .refine(
     (data) => {
-      if (data.is_dual_degree_student && !data.second_home_school) {
+      if (data.is_dual_degree_student === "true" && !data.second_home_school) {
+        console.log("second home school", data);
         return false;
       }
 
       if (data.has_minor && !data.minor) {
+        console.log("THIS IS THE DATA", data);
         return false;
       }
 
-      if (data.has_second_major && !data.second_major) {
+      if (data.has_second_major === "true" && !data.second_major) {
+        console.log("has second major", data);
         return false;
       }
 
       if (data.password !== data.confirmPassword) {
+        console.log("pass", data);
+        return false;
+      }
+
+      if (data.is_current_student === data.is_alumni) {
+        console.log("current", data);
         return false;
       }
 
       return true;
     },
     {
-      message: "Please fill out all required fields",
+      message: "You forgot to fill out a required field",
       path: ["form"],
     },
   );

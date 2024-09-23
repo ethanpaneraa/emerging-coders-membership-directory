@@ -1,3 +1,4 @@
+import { LinkedInLogoIcon } from "@radix-ui/react-icons";
 import { forwardRef, type SVGProps } from "react";
 import { cn } from "~/lib/utils";
 
@@ -112,4 +113,7 @@ export {
   ChevronRightIcon,
   DotsHorizontalIcon,
   ArrowLeftIcon,
+  GitHubLogoIcon,
+  LinkedInLogoIcon,
+  UploadIcon,
 } from "@radix-ui/react-icons";

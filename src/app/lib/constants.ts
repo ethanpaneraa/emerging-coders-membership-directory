@@ -11,7 +11,7 @@ export const SIGNUP_STEPS = [
   { id: 1, name: "Personal Information" },
   { id: 2, name: "Academic Information" },
   { id: 3, name: "Student Status" },
-  { id: 4, name: "Password" },
+  { id: 4, name: "Password Creation" },
 ];
 
 export const HOME_SCHOOLS = [

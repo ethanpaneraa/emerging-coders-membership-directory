@@ -9,7 +9,7 @@ import {
   varchar,
   serial,
   boolean,
-  foreignKey,
+  uuid,
 } from "drizzle-orm/pg-core";
 
 /**
@@ -45,8 +45,8 @@ export const users = createTable(
     second_major: varchar("second_major", { length: 256 }).default(""),
     minor: varchar("minor", { length: 256 }).default(""),
     home_school: varchar("home_school", { length: 256 }).notNull(),
-    is_alumni: boolean("is_alumni").notNull(),
-    is_current_student: boolean("is_current_student").notNull(),
+    is_alumni: varchar("is_alumni").notNull(),
+    is_current_student: varchar("is_current_student").notNull(),
     createdAt: timestamp("created_at", { withTimezone: true })
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
@@ -74,6 +74,8 @@ export const profile = createTable("profile", {
   github_url: varchar("github_url", { length: 256 }).default(""),
   website_url: varchar("website_url", { length: 256 }).default(""),
   resume_url: varchar("resume_url", { length: 256 }).default(""),
+  avatar_url: varchar("avatar_url", { length: 256 }).default(""),
+  profileImageId: uuid("profile_image_id").default(sql`uuid_generate_v4()`),
 });
 
 export const workExperiences = createTable("work_experiences", {

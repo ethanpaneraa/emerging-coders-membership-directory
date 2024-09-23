@@ -1,0 +1,2 @@
+ALTER TABLE "emerging-coders-membership-directory_users" ALTER COLUMN "is_alumni" SET DATA TYPE varchar;--> statement-breakpoint
+ALTER TABLE "emerging-coders-membership-directory_users" ALTER COLUMN "is_current_student" SET DATA TYPE varchar;

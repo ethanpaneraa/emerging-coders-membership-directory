@@ -28,16 +28,17 @@ import {
 } from "~/components/ui/popover";
 import { Checkbox } from "~/components/ui/checkbox";
 import { MAJORS, HOME_SCHOOLS } from "~/app/lib/constants";
+import { type SignupInput } from "~/app/lib/validators/auth";
 
 export const StepOne = () => {
   const {
     control,
     watch,
     formState: { errors },
-  } = useFormContext();
+  } = useFormContext<SignupInput>();
 
   const isDualDegree = watch("is_dual_degree_student");
-  const hasMultipleMajors = watch("has_multiple_majors");
+  const has_second_major = watch("has_second_major");
   const hasMinor = watch("has_minor");
 
   return (
@@ -77,8 +78,10 @@ export const StepOne = () => {
           render={({ field }) => (
             <Checkbox
               id="is_dual_degree_student"
-              checked={field.value}
-              onCheckedChange={field.onChange}
+              checked={field.value === "true"}
+              onCheckedChange={(checked) =>
+                field.onChange(checked ? "true" : "false")
+              }
             />
           )}
         />
@@ -185,20 +188,22 @@ export const StepOne = () => {
 
       <div className="flex items-center space-x-2">
         <Controller
-          name="has_multiple_majors"
+          name="has_second_major"
           control={control}
           render={({ field }) => (
             <Checkbox
-              id="has_multiple_majors"
-              checked={field.value}
-              onCheckedChange={field.onChange}
+              id="has_second_major"
+              checked={field.value === "true"}
+              onCheckedChange={(checked) =>
+                field.onChange(checked ? "true" : "false")
+              }
             />
           )}
         />
         <Label htmlFor="has_multiple_majors">Do you have a second major?</Label>
       </div>
 
-      {hasMultipleMajors && (
+      {has_second_major && (
         <div className="space-y-2">
           <Label htmlFor="second_major">Second Major</Label>
           <Controller
@@ -279,8 +284,10 @@ export const StepOne = () => {
           render={({ field }) => (
             <Checkbox
               id="has_minor"
-              checked={field.value}
-              onCheckedChange={field.onChange}
+              checked={field.value === "true"}
+              onCheckedChange={(checked) =>
+                field.onChange(checked ? "true" : "false")
+              }
             />
           )}
         />

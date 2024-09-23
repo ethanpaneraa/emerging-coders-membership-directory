@@ -28,17 +28,14 @@ const steps = SIGNUP_STEPS;
 export function Signup() {
   const [step, setStep] = useState(0);
   const [previousStep, setPreviousStep] = useState(0);
+  const [submissionError, setSubmissionError] = useState<string | null>(null);
 
   const methods = useForm<SignupInput>({
     resolver: zodResolver(signupSchema),
     mode: "onTouched",
   });
 
-  const {
-    handleSubmit,
-    trigger,
-    formState: { errors },
-  } = methods;
+  const { trigger, getValues } = methods;
 
   const getFieldsToValidate = (currentStep: number): (keyof SignupInput)[] => {
     switch (currentStep) {
@@ -58,6 +55,7 @@ export function Signup() {
           "is_dual_degree_student",
           "second_major",
           "has_minor",
+          "minor",
         ];
       case 2:
         return ["graduation_year", "is_alumni", "is_current_student"];
@@ -70,14 +68,13 @@ export function Signup() {
 
   const nextStep = async () => {
     const fieldsToValidate = getFieldsToValidate(step);
-    console.log("Fields to validate:", fieldsToValidate);
     const isStepValid = await trigger(fieldsToValidate);
-    console.log("Step valid:", isStepValid);
-    console.log("Form errors:", errors);
 
     if (isStepValid) {
       setPreviousStep(step);
       if (step < steps.length - 1) setStep(step + 1);
+    } else {
+      setSubmissionError("Please fill out all required fields.");
     }
   };
 
@@ -86,12 +83,40 @@ export function Signup() {
     if (step > 0) setStep(step - 1);
   };
 
-  const onSubmit = (data: SignupInput) => {
+  const onSubmit = async (data: SignupInput) => {
+    setSubmissionError(null);
     const formData = new FormData();
     Object.keys(data).forEach((key) => {
-      formData.append(key, data[key as keyof SignupInput] as string);
+      console.log("key", key);
+      const value = data[key as keyof SignupInput];
+      if (typeof value === "boolean") {
+        formData.append(key, value ? "true" : "false");
+      } else if (value !== undefined && value !== null) {
+        formData.append(key, value);
+      }
     });
-    signup(null, formData);
+
+    try {
+      const result = await signup(null, formData);
+      if (result.fieldError) {
+        const errors = result.fieldError;
+        Object.keys(errors).forEach((key) => {
+          const error = errors[key as keyof SignupInput];
+          methods.setError(key as keyof SignupInput, {
+            type: "manual",
+            message: error,
+          });
+        });
+      }
+    } catch (error) {
+      setSubmissionError("An error occurred during signup. Please try again.");
+      console.log("error", error);
+    }
+  };
+
+  const handleFormSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    await onSubmit(getValues());
   };
 
   return (
@@ -105,11 +130,14 @@ export function Signup() {
       <CardContent>
         <MultiStepProgressBar step={step} />
         <FormProvider {...methods}>
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+          <form onSubmit={handleFormSubmit} className="space-y-6">
             {step === 0 && <StepZero />}
             {step === 1 && <StepOne />}
             {step === 2 && <StepTwo />}
             {step === 3 && <StepThree />}
+            {submissionError && (
+              <div className="text-sm text-red-500">{submissionError}</div>
+            )}
             <div className="flex justify-between">
               <Button
                 type="button"
@@ -124,7 +152,11 @@ export function Signup() {
                   Next
                 </Button>
               ) : (
-                <SubmitButton aria-label="submit-btn" type="submit">
+                <SubmitButton
+                  aria-label="submit-btn"
+                  type="submit"
+                  onClick={handleFormSubmit}
+                >
                   Sign Up
                 </SubmitButton>
               )}

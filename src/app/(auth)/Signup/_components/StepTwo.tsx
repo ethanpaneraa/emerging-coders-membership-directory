@@ -1,14 +1,15 @@
 import { useFormContext, Controller } from "react-hook-form";
 import { Label } from "~/components/ui/label";
 import { Input } from "~/components/ui/input";
-import { Checkbox } from "~/components/ui/checkbox";
+import { RadioGroup, RadioGroupItem } from "~/components/ui/radio-group";
+import { type SignupInput } from "~/app/lib/validators/auth";
 
 export const StepTwo = () => {
   const {
     control,
     register,
     formState: { errors },
-  } = useFormContext();
+  } = useFormContext<SignupInput>();
 
   return (
     <>
@@ -23,40 +24,37 @@ export const StepTwo = () => {
           })}
         />
         {errors.graduation_year?.message && (
-          <p className="text-red-500">
-            {String(errors.graduation_year.message)}
-          </p>
+          <p className="text-red-500">{errors.graduation_year.message}</p>
         )}
       </div>
 
-      <div className="flex items-center space-x-2">
-        <Controller
-          name="is_alumni"
-          control={control}
-          render={({ field }) => (
-            <Checkbox
-              id="is_alumni"
-              checked={field.value}
-              onCheckedChange={field.onChange}
-            />
-          )}
-        />
-        <Label htmlFor="is_alumni">Are you an alumni?</Label>
-      </div>
-
-      <div className="flex items-center space-x-2">
+      <div className="space-y-2">
+        <Label>Student Status</Label>
         <Controller
           name="is_current_student"
           control={control}
+          rules={{ required: "Please select your student status" }}
           render={({ field }) => (
-            <Checkbox
-              id="is_current_student"
-              checked={field.value}
-              onCheckedChange={field.onChange}
-            />
+            <RadioGroup
+              onValueChange={(value) => {
+                field.onChange(value);
+              }}
+              value={field.value || undefined}
+            >
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="current" id="current_student" />
+                <Label htmlFor="current_student">Current Student</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="alumni" id="alumni" />
+                <Label htmlFor="alumni">Alumni</Label>
+              </div>
+            </RadioGroup>
           )}
         />
-        <Label htmlFor="is_current_student">Are you a current student?</Label>
+        {errors.is_current_student?.message && (
+          <p className="text-red-500">{errors.is_current_student.message}</p>
+        )}
       </div>
     </>
   );

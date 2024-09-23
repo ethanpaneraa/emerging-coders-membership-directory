@@ -1,5 +1,5 @@
 import { type ReactNode } from "react";
 
-export const MainLayout = ({ children }: { children: ReactNode }) => {
+export default function MainLayout({ children }: { children: ReactNode }) {
   return <div>{children}</div>;
-};
+}

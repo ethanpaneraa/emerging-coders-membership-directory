@@ -5,7 +5,7 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { generateId, Scrypt } from "lucia";
-import { eq } from "drizzle-orm";
+// import { eq } from "drizzle-orm";
 import { lucia } from "~/app/lib/auth";
 import { db } from "~/server/db";
 import {
@@ -27,22 +27,26 @@ export async function signup(
   _: any,
   formData: FormData,
 ): Promise<ActionResponse<SignupInput>> {
+  console.log("made it here1");
   const formDataObject = Object.fromEntries(formData.entries());
+  console.log("formDataObject", formDataObject);
   const parsedFormData = signupSchema.safeParse(formDataObject);
-
+  console.log("parsedFormData", parsedFormData);
+  console.log("made it here2");
   if (!parsedFormData.success) {
     const errors = parsedFormData.error.errors;
     return {
       fieldError: errors.reduce(
         (acc, error) => {
           acc[error.path[0] as keyof SignupInput] = error.message;
+          console.log(acc);
           return acc;
         },
         {} as Partial<Record<keyof SignupInput, string | undefined>>,
       ),
     };
   }
-
+  console.log("made it here3");
   const {
     email,
     password,
@@ -61,8 +65,9 @@ export async function signup(
     is_alumni,
     is_current_student,
     has_second_major,
+    second_home_school,
   } = parsedFormData.data;
-
+  console.log("made it here4");
   const isExistingUser = await db.query.users.findFirst({
     where: (table, { eq }) => eq(table.email, email),
     columns: {
@@ -70,6 +75,7 @@ export async function signup(
     },
   });
 
+  console.log("isExistingUser", isExistingUser);
   if (isExistingUser) {
     return {
       formError: "Cannot create an account with that email address.",
@@ -78,7 +84,7 @@ export async function signup(
 
   const newUserId = generateId(21);
   const usersHashedPassword = await new Scrypt().hash(password);
-
+  console.log("made it here");
   await db.insert(users).values({
     id: newUserId,
     email,
@@ -87,21 +93,20 @@ export async function signup(
     last_name,
     gender,
     prefered_name: prefered_name || "",
-    is_dual_degree_student,
-    has_minor,
-    pronouns: pronouns || "",
+    is_dual_degree_student: is_dual_degree_student === "true",
+    has_minor: has_minor === "true",
+    pronouns: pronouns ?? "",
     graduation_year,
     major,
-    second_major: second_major || "",
-    minor: minor || "",
-    home_school,
-    is_alumni,
-    is_current_student,
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    has_second_major,
+    second_major: second_major ?? "",
+    minor: minor ?? "",
+    home_school: home_school ?? "",
+    is_alumni: is_alumni,
+    is_current_student: is_current_student,
+    has_second_major: has_second_major === "true",
+    second_home_school: second_home_school ?? "",
   });
-
+  console.log("user inserted");
   const session = await lucia.createSession(newUserId, {});
   const sessionCookie = lucia.createSessionCookie(session.id);
 

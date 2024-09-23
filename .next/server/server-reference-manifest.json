@@ -29,18 +29,8 @@
         "app/(auth)/Signup/page": "action-browser",
         "app/(auth)/Login/page": "action-browser"
       }
-    },
-    "43097d369a830453d726f5661cef1b60fc4e80d2": {
-      "workers": {
-        "app/(auth)/Signup/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22%2FUsers%2Fethanpineda%2FDesktop%2FEmergingCoders%2Ft3-test%2Femerging-coders-membership-directory%2Fsrc%2Fapp%2Flib%2Fauth%2Factions.ts%22%2C%5B%22login%22%2C%22logout%22%2C%22signup%22%5D%5D%5D&__client_imported__=true!",
-        "app/(auth)/Login/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22%2FUsers%2Fethanpineda%2FDesktop%2FEmergingCoders%2Ft3-test%2Femerging-coders-membership-directory%2Fsrc%2Fapp%2Flib%2Fauth%2Factions.ts%22%2C%5B%22login%22%2C%22logout%22%2C%22signup%22%5D%5D%5D&__client_imported__=true!"
-      },
-      "layer": {
-        "app/(auth)/Signup/page": "action-browser",
-        "app/(auth)/Login/page": "action-browser"
-      }
     }
   },
   "edge": {},
-  "encryptionKey": "408yPOqm7oMfF7CVvfycXGsd8DeKMkv5+TzQd39YIiM="
+  "encryptionKey": "C+hfqVdfi2CaK/aKerhvhDjeZ55lZcYjdc5AA7FbbXo="
 }
